@@ -3,9 +3,10 @@ package com.company;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.sql.*;
 
 public class Main {
     public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
@@ -39,11 +40,12 @@ public class Main {
 
         } catch (SQLException e1) {
             e1.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
     }
-
     //----------------------------------------------------------------------
-    private static void Login() throws IOException {
+    private static void Login() throws IOException, NoSuchAlgorithmException {
         String Login;
         String PassPhrase;
         BufferedReader RLogin = new BufferedReader(new InputStreamReader(System.in));
@@ -64,13 +66,13 @@ public class Main {
             System.out.print("There is no such login");
         }
     }
-
     //-----------------------------------------------------------------------------------
     private static void Registration() throws IOException {
         String Name;
         String Login;
         String Email;
-        String Password;
+        String Password1;
+        String Password2;
         BufferedReader RName = new BufferedReader(new InputStreamReader(System.in));
         BufferedReader RLogin = new BufferedReader(new InputStreamReader(System.in));
         BufferedReader REmail = new BufferedReader(new InputStreamReader(System.in));
@@ -83,32 +85,37 @@ public class Main {
         System.out.println("You'r Email?");
         Email = REmail.readLine();
         System.out.println("You'r Password?");
-        Password = RPassword.readLine();
+        Password1 = RPassword.readLine();
         System.out.println("Repeat you'r Password");
-        if (Password.equals(RRPassword)){
+        Password2 = RRPassword.readLine();
+        if (Password1.equals(Password2)){
             System.out.println("Registration is complete");
             //Here we need to do a write to DataBase
-            Login();
+
         }
         else {
             System.out.println("Passwords do not match");
         }
 
     }
-
     //-----------------------------------------------------------------------------------
-    private static String HashFunction(String PassPhrase) {
+    private static String HashFunction(String PassPhrase) throws NoSuchAlgorithmException {
+        //MessageDigest digest = MessageDigest.getInstance("SHA-256");
         String Hash = "";
-
         String Salt = "3GRsNLRJdBzafAvftA6gY23U";
-        Hash = Salt + PassPhrase;
+       // PassPhrase = PassPhrase + Salt;
+        MessageDigest p = MessageDigest.getInstance("MD5");
+        byte[] data = PassPhrase.getBytes();
+        p.update(data, 0, data.length);
+        BigInteger i = new BigInteger(1, p.digest());
+        Hash =  String.format("%1$032X", i);
         return Hash;
     }
-
     //---------------------------------------------------------------------------------------
     private static boolean PassCheck(String Hash) {
-        String PasswordHash = "3GRsNLRJdBzafAvftA6gY23U12345678";
+        String PasswordHash = "25d55ad283aa400af464c76d713c07ad";
         boolean Result = false;
+        Hash = Hash.toLowerCase();
         //Part, where Prog check does it match a Hash and Login (This is imitation of that process)
         if (Hash.equals(PasswordHash)) {
             Result = true;
@@ -117,7 +124,6 @@ public class Main {
             return Result;
         }
     }
-
     //-----------------------------------------------------------------------------------
     private static boolean LoginCheck(String Login) {
         String PassHash = null;
@@ -132,4 +138,19 @@ public class Main {
         }
     }
     //-----------------------------------------------------------------------------------
+   /* private static boolean RegWrite (Connection con, String Name, String login, String Password){
+        boolean Success = false;
+        try {
+            Statement statement = con.createStatement();
+            ResultSet rs = statement.executeQuery("");
+            while (rs.next()){
+                String string = rs.getString("");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+
+        }
+        return Success;
+    } */
 }
