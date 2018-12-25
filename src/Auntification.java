@@ -11,8 +11,8 @@ public class Auntification {
         //System.out.println(SQLconnect.Useк);
         HelloMSG();
     }
-    
-    public static void HelloMSG () throws NoSuchAlgorithmException {
+
+    private static void HelloMSG () throws NoSuchAlgorithmException {
         System.out.println("Hello! Sign In[1] or Sign Up[2]?");
         Scanner SignScann = new Scanner(System.in);
         int SignAnwser = SignScann.nextInt();
@@ -29,46 +29,29 @@ public class Auntification {
         }
     }
     //Вся жизнь - это метод, а ты в ней переопределен
-    private static void ExeptionHanlde (){
+    public static void ExeptionHanlde (){
         System.out.println("Exception! Try again.");
     }
     //Использовать ли отдельные классы для процесса логина и регистрации?
     //Если файл будет слишком нагруженным я вынесу все это безобразие в отдельные классы
     
-    private static boolean LoginProcces() throws NoSuchAlgorithmException {
-        boolean LogIsDone;
+    private static void LoginProcces() throws NoSuchAlgorithmException {
+        boolean LogIsDone = true;
         System.out.print("Login: ");
         Scanner LoginScann = new Scanner(System.in);
         String Login = LoginScann.next();
         System.out.print("Password: ");
         Scanner PassScann = new Scanner (System.in);
         String Password = (Hash(SaltFP(PassScann.next())));
-        if (LogCheck(Login, Password) == true){
-            System.out.println("You in!");
-            LogIsDone = true;
-            return LogIsDone;
+        //TestUserData.Access(Login, Password);
+        if ((TestUserData.Access(Login, Password)) == true) {
+            System.out.println("Hello, " + Login);
         }
         else {
-            ExeptionHanlde();
+            System.out.println("Access not granted");
         }
-        LogIsDone = false;
-        return LogIsDone;
     }
-    
-     private static Boolean LogCheck(String Login, String Password){
-        String TestPass = "ba04fadec3d42962dd4335843fc7e3432d13759b211c96cf6a7f8ab243280336";
-        String TestLog = "Bylly";
-        //Имитация подключения к БД и проверки пароля
-        boolean Test = false;
-        if (Login.equals(TestLog) && Password.equals(TestPass)){
-            Test = true;
-            return Test;
-        }
-        else {ExeptionHanlde();}
-        return Test;
-        //Конец имитации (игра в имитацию, лол)
-    }
-     
+
     private static boolean RegistrationProcces(){
        // System.out.println("Test method registration");
        boolean RegIsDone; 
@@ -109,7 +92,7 @@ public class Auntification {
         //Тестовый метод для "соления" паролей для сложности их взлома
         String Salt = "1bFhAzq";
         Password = Salt + Password + Salt;
-        System.out.println("Test method for salting password");
+        //System.out.println("Test method for salting password");
         return Password;
     }
     
