@@ -1,18 +1,19 @@
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.SQLException;
 import java.util.Scanner;
 /*
  * @author Rosogi
  */
 public class Auntification {
-    public static void main(String[] args) throws NoSuchAlgorithmException {
+    public static void main(String[] args) throws NoSuchAlgorithmException, SQLException, ClassNotFoundException {
         // Модуль для аунтификации с использованием закрытого подключения к 
         // базе данный на основе MySQL.
         //System.out.println(SQLconnect.Useк);
         HelloMSG();
     }
 
-    private static void HelloMSG () throws NoSuchAlgorithmException {
+    private static void HelloMSG () throws NoSuchAlgorithmException, SQLException, ClassNotFoundException {
         System.out.println("Hello! Sign In[1] or Sign Up[2]?");
         Scanner SignScann = new Scanner(System.in);
         int SignAnwser = SignScann.nextInt();
@@ -35,7 +36,7 @@ public class Auntification {
     //Использовать ли отдельные классы для процесса логина и регистрации?
     //Если файл будет слишком нагруженным я вынесу все это безобразие в отдельные классы
     
-    private static void LoginProcces() throws NoSuchAlgorithmException {
+    private static void LoginProcces() throws NoSuchAlgorithmException, SQLException, ClassNotFoundException {
         boolean LogIsDone = true;
         System.out.print("Login: ");
         Scanner LoginScann = new Scanner(System.in);
@@ -43,8 +44,7 @@ public class Auntification {
         System.out.print("Password: ");
         Scanner PassScann = new Scanner (System.in);
         String Password = (Hash(SaltFP(PassScann.next())));
-        //TestUserData.Access(Login, Password);
-        if ((TestUserData.Access(Login, Password)) == true) {
+        if (SQLFormation.LoginSQLFRomat(Login,Password) == true){
             System.out.println("Hello, " + Login);
         }
         else {
@@ -52,7 +52,7 @@ public class Auntification {
         }
     }
 
-    private static boolean RegistrationProcces(){
+    private static boolean RegistrationProcces() throws SQLException, ClassNotFoundException, NoSuchAlgorithmException {
        // System.out.println("Test method registration");
        boolean RegIsDone; 
        System.out.print("Firts Name: ");
@@ -79,6 +79,8 @@ public class Auntification {
             if (PasswordCheck.equals(Password)){
                 System.out.println("Password is good!");
                 RegIsDone = true;
+                Password = Hash(SaltFP(Password));
+                SQLFormation.RegistrationSQLFormat(FName, SName, BDay, Login, Password);
                 return RegIsDone;
                 //Проверка данных System.out.println(FName+SName+BDay+Login+Password+PasswordCheck);
             }

@@ -1,46 +1,46 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class SQLconnect {
+    public static void main(String args[]){}
 
-    private static final String url = "jdbc:mysql://localhost:3306/test";
-    private static final String user = "root";
-    private static final String password = "root";
-
-    // JDBC variables for opening and managing connection
-    private static Connection con;
-    private static Statement stmt;
-    private static ResultSet rs;
-
-    public static void main(String args[]) {
-        String query = "select count(*) from books";
-
+    public static boolean ExequteUpdateSQL(String sqlqwery) throws ClassNotFoundException, SQLException {
+        boolean PrepareIsDone = false;//Тут надо подставить свои значения
+        String url = "jdbc:mysql://localhost:3306/secondtest?autoReconnect=true&useSSL=false";//часть после знака вопроса - чистая магия дабы убрать ексепшоны по поводу SSL в MYSQL
+        String username = "root";
+        String password = "4208778";
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
         try {
-            // opening database connection to MySQL server
-            con = DriverManager.getConnection(url, user, password);
+            Statement statement = connection.createStatement();
+            statement.executeUpdate(sqlqwery);
 
-            // getting Statement object to execute query
-            stmt = con.createStatement();
-
-            // executing SELECT query
-            rs = stmt.executeQuery(query);
-
-            while (rs.next()) {
-                int count = rs.getInt(1);
-                System.out.println("Total number of books in the table : " + count);
-            }
-
-        } catch (SQLException sqlEx) {
-            sqlEx.printStackTrace();
-        } finally {
-            //close connection ,stmt and resultset here
-            try { con.close(); } catch(SQLException se) { /*can't do anything */ }
-            try { stmt.close(); } catch(SQLException se) { /*can't do anything */ }
-            try { rs.close(); } catch(SQLException se) { /*can't do anything */ }
         }
+
+        finally {
+
+        }
+        return PrepareIsDone;
+    }
+    public static String ExequteSQL(String sqlqwery) throws ClassNotFoundException, SQLException {
+        String url = "jdbc:mysql://localhost:3306/secondtest?autoReconnect=true&useSSL=false";
+        String username = "root";
+        String password = "4208778";
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(url, username, password);
+        try {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlqwery);
+            while (resultSet.next()){
+                String string = resultSet.getString("Password");
+                return string;
+            }
+            resultSet.close();
+            statement.close();
+        }
+        finally {
+            connection.close();
+        }
+        return "0";
     }
 
 }
